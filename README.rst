@@ -1,5 +1,7 @@
 sanic-sentry-error-handler
 ==========================
+.. image:: https://travis-ci.org/ekampf/sanic-sentry-error-handler.svg?branch=master
+
 
 Sentry error handler for Sanic web server
 
