@@ -7,9 +7,9 @@ with open('README.rst') as readme_file:
 
 
 install_requires = [
-    line.strip() for line in
-    open('./requirements.txt')
-    if line.strip() and not line.strip().startswith('#')
+    'sanic >= 0.7.0',
+    'raven',
+    'raven-aiohttp'
 ]
 
 setup_requirements = [
@@ -17,9 +17,12 @@ setup_requirements = [
 ]
 
 test_requirements = [
-    line.strip() for line in
-    open('./requirements_tests.txt')
-    if line.strip() and not line.strip().startswith('#')
+    'pylint',
+    'pytest',
+    'pytest-sugar',
+    'pytest-sanic',
+    'pytest-mock',
+    'mock'
 ]
 
 setup(

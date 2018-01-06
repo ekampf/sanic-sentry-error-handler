@@ -1,3 +1,0 @@
-sanic>=0.7.0
-raven
-raven-aiohttp

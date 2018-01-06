@@ -1,7 +1,6 @@
 import pytest
 import sanic
 import sanic_sentry
-from mock import MagicMock
 
 @pytest.fixture(autouse=True)
 def raven_send_remote(mocker):

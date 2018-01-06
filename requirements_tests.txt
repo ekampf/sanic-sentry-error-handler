@@ -3,5 +3,4 @@ pytest
 pytest-sugar
 pytest-sanic
 pytest-mock
-mock
 flask
