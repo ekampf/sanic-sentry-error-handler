@@ -1,1 +1,0 @@
-# sanic-sentry-error-handler
