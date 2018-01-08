@@ -1,4 +1,4 @@
-# pylint:disable=too-few-public-methods,import-error
+# pylint:disable=too-few-public-methods,import-error,line-too-long
 
 import sys
 import raven
