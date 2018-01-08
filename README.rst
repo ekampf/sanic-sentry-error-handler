@@ -1,7 +1,6 @@
 sanic-sentry-error-handler
 ==========================
-.. image:: https://travis-ci.org/ekampf/sanic-sentry-error-handler.svg?branch=master
-
+|Travis| |PyPI|
 
 Sentry error handler for Sanic web server
 
@@ -29,3 +28,7 @@ To begin we'll set up a Sanic app:
 >>> from sanic_sentry import SanicSentryErrorHandler
 >>> app = Sanic(__name__)
 >>> app.error_handler = SanicSentryErrorHandler('http://public:secret@example.com/1')
+
+.. |Travis| image:: https://travis-ci.org/ekampf/sanic-sentry-error-handler.svg?branch=master
+.. |PyPI| image:: https://badge.fury.io/py/sanic-sentry-error-handler.svg
+    :target: https://badge.fury.io/py/sanic-sentry-error-handler
