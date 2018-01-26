@@ -1,6 +1,8 @@
 # pylint:disable=too-few-public-methods,import-error,line-too-long
 
 import sys
+from functools import wraps
+
 import raven
 from sanic.handlers import ErrorHandler
 from sanic import exceptions as sanic_exceptions
@@ -31,3 +33,20 @@ class SanicSentryErrorHandler(ErrorHandler):
         )
 
         return super(SanicSentryErrorHandler, self).default(request, exception)
+
+    def intercept_exception(self, function):
+        """
+        Decorator for Sanic exception views.
+        Example:
+            >> @app.exception([Exception, ])
+            >> @sentry_client.intercept_exception
+            >> def handle_exception(request, exception):
+            >>     pass
+        """
+
+        @wraps(function)
+        def wrapped_view_function(request, exception):
+            self.default(request, exception)
+            return function(request, exception)
+
+        return wrapped_view_function
