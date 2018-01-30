@@ -1,3 +1,4 @@
+
 import sanic
 import json
 import zlib
@@ -31,4 +32,19 @@ async def test_exception(app, client, raven_send_remote):
     assert data['exception']['values'][0]['type'] == 'ValueError'
 
 
+async def test_intercept_exception_decorator(app, client, raven_send_remote):
+    sentry_client = app.error_handler
 
+    @app.route('/test')
+    def simple(request):
+        raise KeyError("test")
+
+    @app.exception([KeyError, ])
+    @sentry_client.intercept_exception
+    def handle_key_error_exception(request, exception):
+        return sanic.response.json({}, status=400)
+
+    response = await client.get('/test')
+
+    assert response.status == 400
+    assert raven_send_remote.call_count == 1
