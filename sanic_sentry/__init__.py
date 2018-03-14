@@ -4,6 +4,7 @@ import sys
 from functools import wraps
 
 import raven
+from raven_aiohttp import AioHttpTransport
 from sanic.handlers import ErrorHandler
 from sanic import exceptions as sanic_exceptions
 
@@ -11,10 +12,13 @@ from sanic import exceptions as sanic_exceptions
 class SanicSentryErrorHandler(ErrorHandler):
     DEFAULT_EXCEPTIONS_TO_IGNORE = (sanic_exceptions.NotFound,)
 
-    def __init__(self, dsn, exceptions_to_ignore=None):
+    def __init__(self, dsn, exceptions_to_ignore=None, **sentry_kwargs):
         super(SanicSentryErrorHandler, self).__init__()
         self.exceptions_to_ignore = tuple(exceptions_to_ignore) if exceptions_to_ignore is not None else self.DEFAULT_EXCEPTIONS_TO_IGNORE
-        self.sentry_client = raven.Client(dsn)
+        # For sentry_kwargs see
+        # https://docs.sentry.io/clients/python/advanced/#client-arguments
+        self.sentry_client = raven.Client(dsn, transport=AioHttpTransport,
+                                          **sentry_kwargs)
 
     def default(self, request, exception):
         if isinstance(exception, self.exceptions_to_ignore):
