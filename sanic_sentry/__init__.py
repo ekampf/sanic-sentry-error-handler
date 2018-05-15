@@ -7,6 +7,7 @@ import raven
 from raven_aiohttp import AioHttpTransport
 from sanic.handlers import ErrorHandler
 from sanic import exceptions as sanic_exceptions
+from sanic.log import error_logger
 
 
 class SanicSentryErrorHandler(ErrorHandler):
@@ -25,6 +26,8 @@ class SanicSentryErrorHandler(ErrorHandler):
             return super(SanicSentryErrorHandler, self).default(request, exception)
 
         exc_info = sys.exc_info()
+        error_logger.error("Sanic caught exception: %s", exception, exc_info=exception)
+
         self.sentry_client.captureException(
             exc_info,
             extra=dict(

@@ -27,7 +27,7 @@ test_requirements = [
 
 setup(
     name='sanic-sentry-error-handler',
-    version='0.1.3',
+    version='0.1.4',
     license='MIT',
     description='Sanic error handlert that integrates with Sentry',
     long_description=readme,
