@@ -25,16 +25,20 @@ class SanicSentryErrorHandler(ErrorHandler):
             return super(SanicSentryErrorHandler, self).default(request, exception)
 
         exc_info = sys.exc_info()
-        self.sentry_client.captureException(
-            exc_info,
-            extra=dict(
-                url=request.url,
-                method=request.method,
-                headers=request.headers,
-                body=request.body,
-                query_string=request.query_string
+
+        if request:
+            self.sentry_client.captureException(
+                exc_info,
+                extra=dict(
+                    url=request.url,
+                    method=request.method,
+                    headers=request.headers,
+                    body=request.body,
+                    query_string=request.query_string
+                )
             )
-        )
+        else:
+            self.sentry_client.captureException(exc_info)
 
         return super(SanicSentryErrorHandler, self).default(request, exception)
 
