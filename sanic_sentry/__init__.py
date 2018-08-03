@@ -17,8 +17,7 @@ class SanicSentryErrorHandler(ErrorHandler):
         self.exceptions_to_ignore = tuple(exceptions_to_ignore) if exceptions_to_ignore is not None else self.DEFAULT_EXCEPTIONS_TO_IGNORE
         # For sentry_kwargs see
         # https://docs.sentry.io/clients/python/advanced/#client-arguments
-        self.sentry_client = raven.Client(dsn, transport=AioHttpTransport,
-                                          **sentry_kwargs)
+        self.sentry_client = raven.Client(dsn, transport=AioHttpTransport, **sentry_kwargs)
 
     def default(self, request, exception):
         if isinstance(exception, self.exceptions_to_ignore):
@@ -26,7 +25,7 @@ class SanicSentryErrorHandler(ErrorHandler):
 
         exc_info = sys.exc_info()
 
-        if request:
+        if request is not None:
             self.sentry_client.captureException(
                 exc_info,
                 extra=dict(
