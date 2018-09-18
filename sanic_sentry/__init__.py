@@ -9,6 +9,14 @@ from sanic.handlers import ErrorHandler
 from sanic import exceptions as sanic_exceptions
 
 
+def safe_getattr(self, request, attr_name, default=None):
+    # pylint:disable=bare-except
+    try:
+        return getattr(request, attr_name, default)
+    except:
+        return default
+
+
 class SanicSentryErrorHandler(ErrorHandler):
     DEFAULT_EXCEPTIONS_TO_IGNORE = (sanic_exceptions.NotFound,)
 
@@ -29,18 +37,12 @@ class SanicSentryErrorHandler(ErrorHandler):
 
     def _request_debug_info(self, request):
         return dict(
-            url=self._safe_getattr(request, "url"),
-            method=self._safe_getattr(request, "method"),
-            headers=self._safe_getattr(request, "request.headers"),
-            body=self._safe_getattr(request, "body"),
-            query_string=self._safe_getattr(request, "query_string")
+            url=safe_getattr(request, "url"),
+            method=safe_getattr(request, "method"),
+            headers=safe_getattr(request, "request.headers"),
+            body=safe_getattr(request, "body"),
+            query_string=safe_getattr(request, "query_string")
         )
-
-    def _safe_getattr(self, request, attr_name, default=None):
-        try:
-            return getattr(request, attr_name, default)
-        except:
-            return default
 
     def intercept_exception(self, function):
         """
