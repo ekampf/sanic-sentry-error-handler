@@ -14,7 +14,7 @@ Installation
 
 **sanic-sentry-error-handler** should be installed using pip: ::
 
-    pip install sanic-sentry-error-handlert
+    pip install sanic-sentry-error-handler
 
 
 Usage
