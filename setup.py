@@ -33,7 +33,6 @@ setup(
     long_description=readme,
     platforms=('Any'),
     keywords=['sanic', 'sentry'],
-
     author='Eran Kampf',
     url='https://github.com/ekampf/sanic-sentry-error-handler',
     classifiers=[
