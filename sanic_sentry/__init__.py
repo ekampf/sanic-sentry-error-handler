@@ -40,6 +40,10 @@ class SanicSentryErrorHandler(ErrorHandler):
     def intercept_exception(self, function):
         """
         Decorator for Sanic exception views.
+        You should use this decorator only if your exception handler returns its own response.
+        If you're handler returns `None` the default exception handler will be called which
+        means Sentry will be called twice.
+
         Example:
             >> @app.exception([Exception, ])
             >> @sentry_client.intercept_exception
