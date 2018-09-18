@@ -39,9 +39,9 @@ class SanicSentryErrorHandler(ErrorHandler):
         return dict(
             url=safe_getattr(request, "url"),
             method=safe_getattr(request, "method"),
-            headers=safe_getattr(request, "request.headers"),
+            headers=safe_getattr(request, "headers"),
             body=safe_getattr(request, "body"),
-            query_string=safe_getattr(request, "query_string")
+            query_string=safe_getattr(request, "query_string"),
         )
 
     def intercept_exception(self, function):
