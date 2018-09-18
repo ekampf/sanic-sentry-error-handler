@@ -21,9 +21,7 @@ class SanicSentryErrorHandler(ErrorHandler):
 
     def default(self, request, exception):
         if not isinstance(exception, self.exceptions_to_ignore):
-            exc_info = sys.exc_info()
-            if not exc_info or all((not x for x in exc_info)):
-                exc_info = (type(exception), exception, exception.__traceback__)
+            exc_info = (type(exception), exception, exception.__traceback__)
 
             extra = dict()
             if request is not None:
