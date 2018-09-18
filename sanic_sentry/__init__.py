@@ -1,12 +1,19 @@
 # pylint:disable=too-few-public-methods,import-error,line-too-long
 
-import sys
 from functools import wraps
 
 import raven
 from raven_aiohttp import AioHttpTransport
 from sanic.handlers import ErrorHandler
 from sanic import exceptions as sanic_exceptions
+
+
+def safe_getattr(request, attr_name, default=None):
+    # pylint:disable=bare-except
+    try:
+        return getattr(request, attr_name, default)
+    except:
+        return default
 
 
 class SanicSentryErrorHandler(ErrorHandler):
@@ -22,20 +29,20 @@ class SanicSentryErrorHandler(ErrorHandler):
     def default(self, request, exception):
         if not isinstance(exception, self.exceptions_to_ignore):
             exc_info = (type(exception), exception, exception.__traceback__)
-
-            extra = dict()
-            if request is not None:
-                extra = dict(
-                    url=request.url,
-                    method=request.method,
-                    headers=request.headers,
-                    body=request.body,
-                    query_string=request.query_string
-                )
-
+            extra = self._request_debug_info(request) if request else dict()
             self.sentry_client.captureException(exc_info, extra=extra)
 
         return super(SanicSentryErrorHandler, self).default(request, exception)
+
+    def _request_debug_info(self, request):
+        # pylint:disable=no-self-use
+        return dict(
+            url=safe_getattr(request, "url"),
+            method=safe_getattr(request, "method"),
+            headers=safe_getattr(request, "headers"),
+            body=safe_getattr(request, "body"),
+            query_string=safe_getattr(request, "query_string"),
+        )
 
     def intercept_exception(self, function):
         """
