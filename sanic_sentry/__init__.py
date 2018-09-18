@@ -22,20 +22,25 @@ class SanicSentryErrorHandler(ErrorHandler):
     def default(self, request, exception):
         if not isinstance(exception, self.exceptions_to_ignore):
             exc_info = (type(exception), exception, exception.__traceback__)
-
-            extra = dict()
-            if request is not None:
-                extra = dict(
-                    url=request.url,
-                    method=request.method,
-                    headers=request.headers,
-                    body=request.body,
-                    query_string=request.query_string
-                )
-
+            extra = self._request_debug_info(request) if request else dict()
             self.sentry_client.captureException(exc_info, extra=extra)
 
         return super(SanicSentryErrorHandler, self).default(request, exception)
+
+    def _request_debug_info(self, request):
+        return dict(
+            url=self._safe_getattr(request, "url"),
+            method=self._safe_getattr(request, "method"),
+            headers=self._safe_getattr(request, "request.headers"),
+            body=self._safe_getattr(request, "body"),
+            query_string=self._safe_getattr(request, "query_string")
+        )
+
+    def _safe_getattr(self, request, attr_name, default=None):
+        try:
+            return getattr(request, attr_name, default)
+        except:
+            return default
 
     def intercept_exception(self, function):
         """
