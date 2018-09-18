@@ -36,6 +36,7 @@ class SanicSentryErrorHandler(ErrorHandler):
         return super(SanicSentryErrorHandler, self).default(request, exception)
 
     def _request_debug_info(self, request):
+        # pylint:disable=no-self-use
         return dict(
             url=safe_getattr(request, "url"),
             method=safe_getattr(request, "method"),
