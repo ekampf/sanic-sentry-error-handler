@@ -20,24 +20,22 @@ class SanicSentryErrorHandler(ErrorHandler):
         self.sentry_client = raven.Client(dsn, transport=AioHttpTransport, **sentry_kwargs)
 
     def default(self, request, exception):
-        if isinstance(exception, self.exceptions_to_ignore):
-            return super(SanicSentryErrorHandler, self).default(request, exception)
+        if not isinstance(exception, self.exceptions_to_ignore):
+            exc_info = sys.exc_info()
+            if not exc_info:
+                exc_info = (type(exception), exception, exception.__traceback__)
 
-        exc_info = sys.exc_info()
-
-        if request is not None:
-            self.sentry_client.captureException(
-                exc_info,
-                extra=dict(
+            extra = dict()
+            if request is not None:
+                extra = dict(
                     url=request.url,
                     method=request.method,
                     headers=request.headers,
                     body=request.body,
                     query_string=request.query_string
                 )
-            )
-        else:
-            self.sentry_client.captureException(exc_info)
+
+            self.sentry_client.captureException(exc_info, extra=extra)
 
         return super(SanicSentryErrorHandler, self).default(request, exception)
 
