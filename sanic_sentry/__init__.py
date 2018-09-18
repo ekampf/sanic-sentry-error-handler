@@ -1,6 +1,5 @@
 # pylint:disable=too-few-public-methods,import-error,line-too-long
 
-import sys
 from functools import wraps
 
 import raven
@@ -9,7 +8,7 @@ from sanic.handlers import ErrorHandler
 from sanic import exceptions as sanic_exceptions
 
 
-def safe_getattr(self, request, attr_name, default=None):
+def safe_getattr(request, attr_name, default=None):
     # pylint:disable=bare-except
     try:
         return getattr(request, attr_name, default)
